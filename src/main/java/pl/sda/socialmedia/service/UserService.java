@@ -46,7 +46,11 @@ public class UserService {
         return userMapper.mapEntityToUser(userEntityOptional.get()).orElseGet(User::new);
     }
 
-
-
-
+    public void deleteUser(String username) {
+        Optional<UserEntity> userEntityOptional = userRepository.findById(username);
+        userEntityOptional.ifPresentOrElse(userEntity -> {
+            userRepository.deleteById(username);
+            LOG.info("User {} deleted from database.", username);
+        }, () -> LOG.info("User {} not found", username));
+    }
 }

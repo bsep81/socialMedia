@@ -3,6 +3,7 @@ package pl.sda.socialmedia.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,12 +43,17 @@ public class UserController {
         return userService.addUser(user);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{username}")
+    public void deleteUser(@PathVariable("username") String username){
+        LOG.info("Attempting to delete user {} from database.", username);
+        userService.deleteUser(username);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserException.class)
     public Error handleException(UserException exception) {
         LOG.error("exception message {}", exception.getMessage());
         return new Error(400, exception.getMessage());
     }
-
-
 }
