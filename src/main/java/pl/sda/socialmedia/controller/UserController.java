@@ -52,10 +52,17 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PutMapping
+    @PutMapping("/password")
     public User changePassword(@Valid @RequestBody User user){
         LOG.info("Attempting to change password for user {}.", user.getUsername());
         return userService.changePassword(user);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping("/email")
+    public User changeEmail(@Valid @RequestBody User user){
+        LOG.info("Attempting to change email for user {}.", user.getUsername());
+        return userService.changeEmail(user);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
