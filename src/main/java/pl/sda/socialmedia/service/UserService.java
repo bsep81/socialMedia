@@ -53,4 +53,11 @@ public class UserService {
             LOG.info("User {} deleted from database.", username);
         }, () -> LOG.info("User {} not found", username));
     }
+
+    public User changePassword(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        UserEntity updated = userRepository.save(userMapper.mapUserToEntity(user));
+        LOG.info("Passwor for {} has ben changed.", user.getUsername());
+        return userMapper.mapEntityToUser(updated).get();
+    }
 }
