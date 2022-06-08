@@ -19,6 +19,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+    private static final String USER_NOT_FOUND = "User not found.";
 
     public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -39,7 +40,7 @@ public class UserService {
     public User getUserById(String username){
         Optional<UserEntity> userEntityOptional = userRepository.findById(username);
         if(userEntityOptional.isEmpty()){
-            throw new UserException("User not found.");
+            throw new UserException(USER_NOT_FOUND);
         }
 
         LOG.info("User {} found.", username);
@@ -55,9 +56,21 @@ public class UserService {
     }
 
     public User changePassword(User user){
+        if(userRepository.findById(user.getUsername()).isEmpty()){
+            throw new UserException(USER_NOT_FOUND);
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserEntity updated = userRepository.save(userMapper.mapUserToEntity(user));
-        LOG.info("Passwor for {} has ben changed.", user.getUsername());
+        LOG.info("Password for {} has been changed.", user.getUsername());
+        return userMapper.mapEntityToUser(updated).get();
+    }
+
+    public User changeEmail(User user){
+        if(userRepository.findById(user.getUsername()).isEmpty()){
+            throw new UserException(USER_NOT_FOUND);
+        }
+        UserEntity updated = userRepository.save(userMapper.mapUserToEntity(user));
+        LOG.info("Email for {} has been changed.", user.getUsername());
         return userMapper.mapEntityToUser(updated).get();
     }
 }
