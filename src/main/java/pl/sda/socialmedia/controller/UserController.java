@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -48,6 +49,13 @@ public class UserController {
     public void deleteUser(@PathVariable("username") String username){
         LOG.info("Attempting to delete user {} from database.", username);
         userService.deleteUser(username);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping
+    public User changePassword(@Valid @RequestBody User user){
+        LOG.info("Attempting to change password for user {}.", user.getUsername());
+        return userService.changePassword(user);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
