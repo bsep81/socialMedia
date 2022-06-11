@@ -68,5 +68,13 @@ class UserServiceTest {
         assertEquals(user, result);
     }
 
+    @Test
+    void shouldThrowUserExceptionWhenUserNotFound(){
+        String username = "testuser";
+        when(userRepository.findById(username)).thenReturn(Optional.empty());
+
+        UserException exception = assertThrows(UserException.class, () -> userService.getUserById(username));
+        assertEquals("User not found.", exception.getMessage());
+    }
 
 }
