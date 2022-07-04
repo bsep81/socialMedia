@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface FriendshipRepository extends CrudRepository<FriendshipEntity, Long> {
 
-    Optional<FriendshipEntity> findFriendshipEntityByFriends(List<UserEntity> friends);
+    Optional<FriendshipEntity> findFriendshipEntityByFriendsContainingAndFriendsContaining(UserEntity friend0, UserEntity friend1);
+    List<FriendshipEntity> findFriendshipEntitiesByFriendsContaining(UserEntity user);
 }
