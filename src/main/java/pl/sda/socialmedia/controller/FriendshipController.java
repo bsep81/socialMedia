@@ -3,6 +3,7 @@ package pl.sda.socialmedia.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import pl.sda.socialmedia.exceptions.FriendshipException;
+import pl.sda.socialmedia.model.Error;
 import pl.sda.socialmedia.model.Friendship;
 import pl.sda.socialmedia.model.User;
 import pl.sda.socialmedia.service.FriendshipService;
@@ -53,5 +56,12 @@ public class FriendshipController {
     public List<Friendship> getFriendships(@PathVariable("username") String username){
         LOG.info("Attempting to get List of friendships of {}", username);
         return friendshipService.getAllFriendships(username);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FriendshipException.class)
+    public Error handleException(FriendshipException exception) {
+        LOG.error("exception message {}", exception.getMessage());
+        return new Error(400, exception.getMessage());
     }
 }

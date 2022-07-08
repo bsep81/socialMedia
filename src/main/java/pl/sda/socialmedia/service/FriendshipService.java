@@ -91,8 +91,8 @@ public class FriendshipService {
         if(userEntityOptional.isEmpty()){
             throw new UserException("User not found.");
         }
-
         List<FriendshipEntity> friendshipEntities = friendshipRepository.findFriendshipEntitiesByFriendsContaining(userEntityOptional.get());
+        LOG.info("List of friendships of user {} obtained.", username);
         return friendshipEntities.stream().map(entity -> friendshipMapper.mapEntityToFriendship(entity).get()).collect(Collectors.toList());
     }
 }
