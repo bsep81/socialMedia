@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
@@ -25,7 +24,7 @@ public class User {
     private String role;
     @NotNull
     @Email(message = "Has to be a valid email address.")
-    @Column(unique = true)
     private String email;
+
 
 }

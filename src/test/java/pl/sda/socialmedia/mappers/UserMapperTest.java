@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserMapperTest {
 
+
+    private MessageMapper messageMapper;
     private final UserMapper userMapper = new UserMapper();
 
     private UserEntity entity;
