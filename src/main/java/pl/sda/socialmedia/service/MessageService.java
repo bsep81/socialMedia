@@ -38,7 +38,7 @@ public class MessageService {
             throw new MessageException("No message id or no message with given id present in database.");
         }
 
-        MessageEntity edited = messageRepository.save((messageMapper.mapDAOToEntity(messageDAO)));
+        MessageEntity edited = messageRepository.save(messageMapper.mapDAOToEntity(messageDAO));
         LOG.info("{} edited a message", messageDAO.getUsername());
         return messageMapper.mapEntityToMessageDAO(edited).get();
     }
