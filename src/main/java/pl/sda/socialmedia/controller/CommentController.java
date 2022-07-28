@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sda.socialmedia.dao.CommentDAO;
+import pl.sda.socialmedia.exceptions.CommentException;
+import pl.sda.socialmedia.model.Error;
 import pl.sda.socialmedia.service.CommentService;
 
 import java.util.List;
@@ -58,6 +61,12 @@ public class CommentController {
         return commentService.getComments(messageId);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CommentException.class)
+    public Error handleException(CommentException exception) {
+        LOG.error("exception message {}", exception.getMessage());
+        return new Error(400, exception.getMessage());
+    }
 
 
 }
