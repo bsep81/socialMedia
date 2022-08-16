@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.sda.socialmedia.db.FriendshipEntity;
 import pl.sda.socialmedia.db.UserEntity;
 import pl.sda.socialmedia.exceptions.FriendshipException;
+import pl.sda.socialmedia.exceptions.UserException;
 import pl.sda.socialmedia.mappers.FriendshipMapper;
 import pl.sda.socialmedia.mappers.UserMapper;
 import pl.sda.socialmedia.model.Friendship;
@@ -120,20 +121,87 @@ class FriendshipServiceTest {
                 .status("requested")
                 .build();
 
-        FriendshipEntity changed = friendshipEntity;
-        changed.setStatus("accepted");
+        friendshipEntity.setStatus("accepted");
 
         Friendship friendship = Friendship.builder()
                 .status("accepted")
                 .build();
 
         when(friendshipRepository.findById(friendshipId)).thenReturn(Optional.of(friendshipEntity));
-        when(friendshipRepository.save(friendshipEntity)).thenReturn(changed);
-        when(friendshipMapper.mapEntityToFriendship(changed)).thenReturn(Optional.of(friendship));
+        when(friendshipRepository.save(friendshipEntity)).thenReturn(friendshipEntity);
+        when(friendshipMapper.mapEntityToFriendship(friendshipEntity)).thenReturn(Optional.of(friendship));
 
         Friendship result = friendshipService.changeStatus(1L, "accepted");
 
-        assertEquals(changed.getStatus(), result.getStatus());
+        assertEquals(friendshipEntity.getStatus(), result.getStatus());
+    }
+
+    @Test
+    void shouldThrowUserExceptionWhenUserNotFound(){
+        String username1 = "test User";
+
+        when(userRepository.findById(username1)).thenReturn(Optional.empty());
+
+        UserException exception = assertThrows(UserException.class, () -> friendshipService.findFriendship(username1, ""));
+        assertEquals("User not found.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnFriendship(){
+        String username1 = "test User 1";
+        String username2 = "test User 2";
+
+        User user1 = User.builder()
+                .username(username1)
+                .password("test password 1")
+                .role("ADMIN")
+                .email("test@email1")
+                .build();
+        User user2 = User.builder()
+                .username(username2)
+                .password("test password 2")
+                .role("ADMIN")
+                .email("test@email2")
+                .build();
+
+        UserEntity userEntity1 = UserEntity.builder()
+                .username(username1)
+                .password("test password 1")
+                .role("ADMIN")
+                .email("test@email1")
+                .build();
+        UserEntity userEntity2 = UserEntity.builder()
+                .username(username2)
+                .password("test password 2")
+                .role("ADMIN")
+                .email("test@email2")
+                .build();
+
+        Optional<UserEntity> user1Optional = Optional.of(userEntity1);
+        Optional<UserEntity> user2Optional = Optional.of(userEntity2);
+
+        Friendship friendship = Friendship.builder()
+                .id(1L)
+                .friends(List.of(user1, user2))
+                .status("accepted")
+                .build();
+
+        FriendshipEntity friendshipEntity = FriendshipEntity.builder()
+                .id(1L)
+                .friends(List.of(userEntity1, userEntity2))
+                .status("accepted")
+                .build();
+        Optional<FriendshipEntity> friendshipEntityOptional = Optional.of(friendshipEntity);
+
+        when(userRepository.findById(username1)). thenReturn(Optional.of(userEntity1));
+        when(userRepository.findById(username2)). thenReturn(Optional.of(userEntity2));
+        when(friendshipRepository.findFriendshipEntityByFriendsContainingAndFriendsContaining(user1Optional.get(), user2Optional.get()))
+                .thenReturn(friendshipEntityOptional);
+        when(friendshipMapper.mapEntityToFriendship(friendshipEntityOptional.get())).thenReturn(Optional.of(friendship));
+
+        Friendship result = friendshipService.findFriendship(username1, username2);
+
+        assertEquals(friendship,result);
     }
 
 }
