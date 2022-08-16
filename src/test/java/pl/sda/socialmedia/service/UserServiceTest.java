@@ -62,7 +62,6 @@ class UserServiceTest {
 
         User result = userService.addUser(user);
 
-
         user.setPassword("$2a$10$kVjeRsmt/tW/PNMhji2eVOhXAhRtvlqp2CoYnJqLuD1wrzPIjwnsy");
 
         assertEquals(user, result);
