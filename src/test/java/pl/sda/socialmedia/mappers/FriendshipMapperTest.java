@@ -26,8 +26,6 @@ class FriendshipMapperTest {
     @InjectMocks
     private FriendshipMapper friendshipMapper;
 
-    private User user;
-    private UserEntity userEntity;
     private Friendship friendship;
     private FriendshipEntity friendshipEntity;
     private List<User> users;
@@ -36,14 +34,14 @@ class FriendshipMapperTest {
 
     @BeforeEach
     void setup(){
-        userEntity = UserEntity.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .username("test name")
                 .password("test password")
                 .role("test role")
                 .email("test email")
                 .build();
 
-        user = User.builder()
+        User user = User.builder()
                 .username("test name")
                 .password("test password")
                 .role("test role")

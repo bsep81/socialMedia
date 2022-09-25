@@ -204,4 +204,6 @@ class FriendshipServiceTest {
         assertEquals(friendship,result);
     }
 
+   
+
 }
